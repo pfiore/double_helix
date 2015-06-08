@@ -1,0 +1,19 @@
+<?php
+    class DnaTestClass extends DrupalUnitTestCase {
+
+        public static function getInfo() {
+            return array(
+                'name' => 'DNA Unit Test',
+                'description' => 'Takes an input string and finds nucleptide pair',
+                'group' => 'Examples',
+            );
+        }
+
+        function testDnaPair() {
+            $input = 'A';
+            $result = dnaPair($input);
+            $message = 'Input "A" will return its pair: "T" ';
+            $this->assertEqual($result, 'T');
+        }
+
+    }

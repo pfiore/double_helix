@@ -1,0 +1,99 @@
+<?php
+
+function dna_pair($input) {
+    $nucleotides = str_split(strtoupper($input));
+    $valid_dna = array("A", "C", "T", "G");
+
+
+    $result = '';
+
+    foreach($nucleotides as $nucleotide) {
+        if (!in_array($nucleotide, $valid_dna)) {
+            $result = '';
+            $result .= "ERROR: Please limit your input to ATCG";
+            break;
+        }
+
+        if ($nucleotide == "A") {
+            $result .= "T";
+        }
+        if ($nucleotide == "T") {
+            $result .= "A";
+        }
+        if ($nucleotide == "G") {
+            $result .= "C";
+        }
+        if ($nucleotide == "C") {
+            $result .= "G";
+        }
+
+    }
+    return $result;
+
+
+}
+
+function double_helix_menu() {//must be named nameofmudule_menu
+    $items['dna_sequencer'] = array(
+        'title' => 'DNA Sequence',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('dna_form'),
+        'access callback' => TRUE,
+        'type' => MENU_NORMAL_ITEM,
+    );
+
+    $items['dna_success'] = array(
+        'title' => 'DNA pair!',
+        'page callback' => 'dna_form_success',
+        'access callback' => TRUE,
+        'type' => MENU_CALLBACK,
+    );
+    return $items;
+}
+
+function dna_form() {
+
+    $form['input'] = array (
+        '#title' => 'Enter First Nucleotide Sequence:',
+        '#type' => 'textfield',
+        '#description' => t("DNA is a molecule which essentially carries the programming instructions to create all life on Earth. But, it/'s composed of surprisingly simple elements. There are 4 of these elements, called nucleotides. They start with the letters A T C G. Enter one half of the squence to find its pairing."),
+        '#element_validate' => array('element_validate_input'),
+        '#required' => TRUE,
+    );
+
+    $form['submit'] =array(
+        '#type' => 'submit',
+        '#value' => 'Submit',
+    );
+    return $form;
+}
+
+function dna_form_submit($form, &$form_state) {
+    $input = $form_state['values']['input'];
+    $_SESSION['input'] = $input;
+    $result = dna_pair($input);
+    $_SESSION['result'] = $result;
+    $form_state['redirect'] = 'dna_success';
+}
+
+
+
+function element_validate_input($element) {
+    if(strlen($element['#value']) != 4) {
+        form_error($element, t('Must be 4 characters'));
+    }
+    if (preg_match("/[^A,T,C,G]/i", $element['#value'])) {
+    form_error($element, t('Must be A, T, C, or G'));
+    }
+}
+
+
+// $_SESSION['dna_result'] = $result;
+// $result_dna = $_SESSION['encrypt_result'];
+//
+// $form_state['redirect'] = 'encrypted_phrase';
+// }
+//
+function dna_form_success() {
+return 'Matching DNA pair for [' . strtoupper($_SESSION['input']) . '] is: <div class="result">[' . $_SESSION['result'] . ']</div>';
+}

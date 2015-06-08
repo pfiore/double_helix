@@ -1,0 +1,6 @@
+name = Double Helix
+description = Takes input of one half of DNA sequence and returns its pair.
+package = Epicodus Examples
+core = 7.x
+files[] = double_helix.module
+files[] = double_helix.test
